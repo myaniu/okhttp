@@ -50,12 +50,7 @@ public final class SpdyTransport implements Transport {
         .header(":version", RequestLine.version(httpEngine.connection.getHttpMinorVersion()))
         .header(":host", HttpEngine.hostHeader(request.url()));
 
-    if (httpEngine.hasRequestBody()) {
-      long fixedContentLength = httpEngine.policy.getFixedContentLength();
-      if (fixedContentLength != -1) {
-        builder.setContentLength(fixedContentLength);
-      }
-    }
+    builder.removeHeader("Transfer-Encoding"); // SPDY doesn't use chunked encoding.
 
     return builder.build();
   }
